@@ -1,6 +1,4 @@
 .env
 __pycache__
-.pylintrc
 build
 dist
-pqgit.spec

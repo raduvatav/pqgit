@@ -25,7 +25,7 @@ import pqgit_ui
 from pqgit_model import BranchesModel, HistoryModel, FilesModel, Branch, Commit, Patch
 from pqgit_util import STYLES, GIT_STATUS, parse_tree_rec
 
-VERSION = 'v0.01'
+VERSION = 'v0.02'
 
 # modify difflib colors
 _html_diff = difflib.HtmlDiff(tabsize=4)  #pylint: disable=invalid-name
@@ -109,11 +109,11 @@ class Pqgit(QMainWindow):
 		timer.timeout.connect(self.on_timer)
 		timer.start(5000)
 
-		self.dir_name = self.settings.value('last_opened_repo', '')
+		self.dir_name = self.settings.value('last_opened_repo', None)
 
 		try:
 			pygit2.Repository(self.dir_name)
-		except pygit2.GitError:
+		except Exception:
 			self.open_dir()
 			return
 
