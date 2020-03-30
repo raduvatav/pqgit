@@ -30,6 +30,15 @@ diff_tool=bcompare
 ...
 ```
 
+## Freezing (build an executable)
+
+This seems to work for both Linux and Windows:
+```
+pip install pyinstaller
+pyinstaller --hidden-import=_cffi_backend pqgit.py
+```
+If everything goes well, find your executable under `dist/pqgit/pqgit[.exe]`
+
 ## Screenshot
 
 ![Alt text](screenshot.png?raw=true)

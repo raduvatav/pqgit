@@ -25,6 +25,8 @@ import pqgit_ui
 from pqgit_model import BranchesModel, HistoryModel, FilesModel, Branch, Commit, Patch
 from pqgit_util import STYLES, GIT_STATUS, parse_tree_rec
 
+VERSION = 'v0.01'
+
 # modify difflib colors
 _html_diff = difflib.HtmlDiff(tabsize=4)  #pylint: disable=invalid-name
 _html_diff._styles = STYLES  #pylint: disable=protected-access
@@ -144,7 +146,7 @@ class Pqgit(QMainWindow):
 	def open_repo(self):
 		""" called either on start or after open dialog """
 
-		self.setWindowTitle(f'{self.dir_name} - pqgit')
+		self.setWindowTitle(f'{self.dir_name} - pqgit ({VERSION})')
 		self.repo = pygit2.Repository(self.dir_name)
 
 		# remove existing files and folder from watch
