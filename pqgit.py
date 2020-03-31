@@ -16,7 +16,7 @@ from PySide2.QtWidgets import (
 )
 
 from PySide2.QtCore import (
-	QItemSelectionModel, QItemSelection, QSettings, QPoint, QSize, QTimer, QDir, QFileSystemWatcher
+	QItemSelectionModel, QItemSelection, QSettings, QPoint, QSize, QTimer, QDir, QFileSystemWatcher, Qt
 )
 
 from PySide2.QtGui import QFont, QIcon, QKeySequence
@@ -45,9 +45,13 @@ class Pqgit(QMainWindow):
 	""" main class / entry point """
 	def __init__(self):
 		super().__init__()
-
+		self.setAttribute(Qt.WA_DeleteOnClose)  # let Qt delete stuff before the python garbage-collector gets to work
 		self.repo = None
 		self.branches_model = None
+
+		# instantiate main window
+		self.ui = pqgit_ui.Ui_MainWindow()
+		self.ui.setupUi(self)
 
 		self.fs_watch = QFileSystemWatcher(self)
 		self.fs_watch.fileChanged.connect(self.on_file_changed)
@@ -57,10 +61,6 @@ class Pqgit(QMainWindow):
 
 		# for comparison
 		self.new_c_id, self.old_c_id = None, None
-
-		# instantiate main window
-		self.ui = pqgit_ui.Ui_MainWindow()
-		self.ui.setupUi(self)
 
 		# window icon
 		cwd = os.path.dirname(os.path.realpath(__file__))
