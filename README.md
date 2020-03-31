@@ -4,19 +4,7 @@ pqgit is a graphical git browser. It shows the branches and the commit log of a 
 
 ## Installation
 
-You need python3 (not sure about minimum version; I wrote this with 3.8) and also probably have to 
-
-```pip install pygit2 PySide2``` 
-
-Install Qt if you don't already have it. Your distro should have it (if not, you probably don't need instructions)
-
-Then run `python pqgit.py`.
-
-## Releases
-
-I'm including a precompiled windows executable with the releases. It's pretty big (~40 MB) since it has all needed dll's (Qt, Python, etc.) in one file.
-
-The linux executable would be even bigger (~140 MB) and it doesn't make much sense. I plan to make an Arch package soon.
+```pip install pqgit``` 
 
 
 ## Usage
@@ -41,15 +29,26 @@ diff_tool=bcompare
 ...
 ```
 
-## Freezing (build an executable)
-
-This seems to work for both Linux and Windows:
-```
-pip install pyinstaller
-pyinstaller pqgit.spec
-```
-If everything goes well, find your executable under `dist/pqgit[.exe]`
-
 ## Screenshot
 
 ![Alt text](screenshot.png?raw=true)
+
+## Contributing
+This project uses **tabs**. Please use the included `.style.yapf` and `.pylintrc`
+
+If you want to change the UI, edit `pqgit.ui` with Qt Designer, then run:
+```
+pyside2-uic pqgit.ui >| src/pqgit/ui.py
+```
+
+## Wheel package (for PyPi / installing with pip)
+### Install locally
+```
+pip install -e .
+```
+### Create packages for PyPi
+
+```
+python3 setup.py sdist bdist_wheel
+pip install --force-reinstall --no-deps dist/pqgit-<VERSION>-py3-none-any.whl
+```

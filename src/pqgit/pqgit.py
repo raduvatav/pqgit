@@ -21,11 +21,12 @@ from PySide2.QtCore import (
 
 from PySide2.QtGui import QFont, QIcon, QKeySequence
 
-import pqgit_ui
-from pqgit_model import BranchesModel, HistoryModel, FilesModel, Branch, Commit, Patch
-from pqgit_util import STYLES, GIT_STATUS, parse_tree_rec
+from pqgit import ui
+from pqgit.model import BranchesModel, HistoryModel, FilesModel, Branch, Commit, Patch
+from pqgit.util import STYLES, GIT_STATUS, parse_tree_rec
 
-VERSION = 'v0.02'
+import pkg_resources  # part of setuptools
+VERSION = pkg_resources.require("pqgit")[0].version
 
 # modify difflib colors
 _html_diff = difflib.HtmlDiff(tabsize=4)  #pylint: disable=invalid-name
@@ -50,7 +51,7 @@ class Pqgit(QMainWindow):
 		self.branches_model = None
 
 		# instantiate main window
-		self.ui = pqgit_ui.Ui_MainWindow()
+		self.ui = ui.Ui_MainWindow()
 		self.ui.setupUi(self)
 
 		self.fs_watch = QFileSystemWatcher(self)
@@ -64,7 +65,7 @@ class Pqgit(QMainWindow):
 
 		# window icon
 		cwd = os.path.dirname(os.path.realpath(__file__))
-		self.setWindowIcon(QIcon(cwd + '/Git-Icon-White.png'))
+		self.setWindowIcon(QIcon(os.path.join(cwd, 'Git-Icon-White.png')))
 		self.setWindowTitle('pqgit')
 
 		# size and position
@@ -113,7 +114,7 @@ class Pqgit(QMainWindow):
 
 		try:
 			pygit2.Repository(self.dir_name)
-		except Exception:
+		except Exception:  #pylint: disable=broad-except
 			self.open_dir()
 			return
 
@@ -196,8 +197,10 @@ class Pqgit(QMainWindow):
 		""" poll opened diff tools (like meld) and close temp files when finished """
 		for dt in self.difftools:
 			if subprocess.Popen.poll(dt.proc) is not None:
-				dt.old_f.close()
-				dt.new_f.close()
+				if dt.old_f:
+					dt.old_f.close()
+				if dt.new_f:
+					dt.new_f.close()
 				dt.running = False
 
 		self.difftools[:] = [dt for dt in self.difftools if dt.running]
@@ -447,7 +450,7 @@ class Pqgit(QMainWindow):
 		self.on_timer()
 
 
-def main():
+def pqgit_main():
 	""" main """
 	app = QApplication(sys.argv)
 	app.aboutToQuit.connect(app.deleteLater)
@@ -458,4 +461,4 @@ def main():
 
 
 if __name__ == '__main__':
-	main()
+	pqgit_main()
